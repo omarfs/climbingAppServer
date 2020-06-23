@@ -1,0 +1,7 @@
+{
+  "env": {
+    "MONGO_USER": "omarFonseca",
+    "MONGO_PASSWORD": "9QerVkK6yTxdWWwf",
+    "MONGO_DB": "climbig-app-db"
+  }
+}
