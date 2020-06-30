@@ -6,6 +6,7 @@ import {
 import mongoose from 'mongoose'
 import RouteModel from '../../models/route'
 import RoutesPayload from '../types/routesPayload'
+import RoutesWithProjectsPayload from '../types/routesWithProjects'
 
 const RouteQueries = {
   routes: {
@@ -67,6 +68,48 @@ const RouteQueries = {
         }
       ])
       return { routes }
+    }
+  },
+  routesWithProjects: {
+    type: new GraphQLNonNull(RoutesWithProjectsPayload),
+    args: {
+      userid: {
+        name: 'userid',
+        type: GraphQLString,
+        defaultValue: null
+      }
+    },
+    async resolve(obj, args, context, info) {
+      const routesWithProjects = await RouteModel.aggregate([
+        {
+          $lookup: {
+            from: 'projects',
+            let: {
+              route: '$_id',
+              user: mongoose.Types.ObjectId(args.userid)
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$$route', '$route'] },
+                      { $eq: ['$$user', '$user'] }
+                    ]
+                  }
+                }
+              },
+              {
+                $project: {
+                  user: 0,
+                  route: 0
+                }
+              }
+            ],
+            as: 'projects'
+          }
+        }])
+      return { routesWithProjects }
     }
   }
 }

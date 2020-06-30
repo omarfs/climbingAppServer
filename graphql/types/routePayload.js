@@ -2,16 +2,17 @@ import {
   GraphQLString,
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLBoolean
+  GraphQLList
 } from 'graphql'
 import LocationEnum from './locationEnum'
 import GradeEnum from './gradeEnum'
 import ColorEnum from './colorEnum'
 import DateTime from './dateTime'
+import ProjectForArray from './projectForArray'
 
-const RoutePayload = new GraphQLObjectType({
-  name: 'RoutePayload',
-  description: 'Routes payload including aggregated project field',
+const RouteWithProjectsPayload = new GraphQLObjectType({
+  name: 'RouteWithProjectsPayload',
+  description: 'Route payload including aggregated project array',
   fields: () => ({
     _id: {
       type: new GraphQLNonNull(GraphQLString)
@@ -43,10 +44,10 @@ const RoutePayload = new GraphQLObjectType({
     createdAt: {
       type: DateTime
     },
-    project: {
-      type: GraphQLBoolean
+    projects: {
+      type: new GraphQLList(ProjectForArray)
     }
   })
 })
 
-export default RoutePayload
+export default RouteWithProjectsPayload
